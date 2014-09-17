@@ -24,73 +24,73 @@ type General struct {
 }
 
 func parseGeneral(r *bufio.Reader, s *SOR) error {
-	g := General{ID: "GenParams"}
+	bk := General{ID: "GenParams"}
 
-	header, err := getBlock("GenParams", s)
+	header, err := getBlock(bk.ID, s)
 	if err != nil {
 		return err
 	}
 
 	// capture entire block
-	gBytes, err := readNBytes(r, int(header.Bytes))
+	bkBytes, err := readNBytes(r, int(header.Bytes))
 	if err != nil {
 		return ErrIncompleteBlock
 	}
-	gBuf := bytes.NewBuffer(gBytes)
+	bkBuf := bytes.NewBuffer(bkBytes)
 
 	// if v2, need to get header out of the way
 	if s.Version == SORv2 {
-		_, _ = gBuf.ReadBytes('\x00')
+		_, _ = bkBuf.ReadBytes('\x00')
 	}
 
 	lc := make([]byte, 2)
-	_, err = gBuf.Read(lc)
-	g.Language = string(lc)
+	_, err = bkBuf.Read(lc)
+	bk.Language = string(lc)
 
-	cid, _ := gBuf.ReadBytes('\x00')
-	g.CableID = string(bytes.TrimSpace(cid))
+	cid, _ := bkBuf.ReadBytes('\x00')
+	bk.CableID = string(bytes.TrimSpace(cid))
 
-	fid, _ := gBuf.ReadBytes('\x00')
-	g.FiberID = string(bytes.TrimSpace(fid))
+	fid, _ := bkBuf.ReadBytes('\x00')
+	bk.FiberID = string(bytes.TrimSpace(fid))
 
 	// fiber type not in v1?
 	if s.Version == SORv2 {
 		var ft uint16
-		binary.Read(gBuf, binary.LittleEndian, &ft)
-		g.FiberType = int(ft)
+		binary.Read(bkBuf, binary.LittleEndian, &ft)
+		bk.FiberType = int(ft)
 	}
 
 	var nw uint16
-	binary.Read(gBuf, binary.LittleEndian, &nw)
-	g.Wavelength = int(nw)
+	binary.Read(bkBuf, binary.LittleEndian, &nw)
+	bk.Wavelength = int(nw)
 
-	ol, _ := gBuf.ReadBytes('\x00')
-	g.OriginatingLoc = string(bytes.TrimSpace(ol))
+	ol, _ := bkBuf.ReadBytes('\x00')
+	bk.OriginatingLoc = string(bytes.TrimSpace(ol))
 
-	tl, _ := gBuf.ReadBytes('\x00')
-	g.TerminatingLoc = string(bytes.TrimSpace(tl))
+	tl, _ := bkBuf.ReadBytes('\x00')
+	bk.TerminatingLoc = string(bytes.TrimSpace(tl))
 
-	cc, _ := gBuf.ReadBytes('\x00')
-	g.CableCode = string(bytes.TrimSpace(cc))
+	cc, _ := bkBuf.ReadBytes('\x00')
+	bk.CableCode = string(bytes.TrimSpace(cc))
 
 	cdf := make([]byte, 2)
-	_, err = gBuf.Read(cdf)
-	g.Condition = string(cdf)
+	_, err = bkBuf.Read(cdf)
+	bk.Condition = string(cdf)
 
-	binary.Read(gBuf, binary.LittleEndian, &g.Offset)
+	binary.Read(bkBuf, binary.LittleEndian, &bk.Offset)
 
 	// offset distance not in v1?
 	if s.Version == SORv2 {
-		binary.Read(gBuf, binary.LittleEndian, &g.OffsetDistance)
+		binary.Read(bkBuf, binary.LittleEndian, &bk.OffsetDistance)
 	}
 
-	op, _ := gBuf.ReadBytes('\x00')
-	g.Operator = string(bytes.TrimSpace(op))
+	op, _ := bkBuf.ReadBytes('\x00')
+	bk.Operator = string(bytes.TrimSpace(op))
 
-	cmt, _ := gBuf.ReadBytes('\x00')
-	g.Comment = string(bytes.TrimSpace(cmt))
+	cmt, _ := bkBuf.ReadBytes('\x00')
+	bk.Comment = string(bytes.TrimSpace(cmt))
 
-	s.GeneralParams = g
+	s.GeneralParams = bk
 
 	return nil
 }
