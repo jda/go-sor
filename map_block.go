@@ -2,9 +2,8 @@ package sor
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/binary"
-	//"encoding/hex"
-	"fmt"
 )
 
 type Block struct {
@@ -28,7 +27,6 @@ func parseBlocks(r *bufio.Reader, s *SOR) error {
 
 	var blocks int16
 	binary.Read(r, binary.LittleEndian, &blocks)
-	fmt.Printf("NB: %d\n", blocks)
 
 	s.Blocks = append(s.Blocks, mb)
 
@@ -36,7 +34,7 @@ func parseBlocks(r *bufio.Reader, s *SOR) error {
 	for i := 1; i < int(blocks); i++ {
 		var m Block
 		block_name, _ := r.ReadBytes('\x00')
-		m.ID = string(block_name)
+		m.ID = string(bytes.Trim(block_name, "\x00"))
 		binary.Read(r, binary.LittleEndian, &m.Version)
 		binary.Read(r, binary.LittleEndian, &m.Bytes)
 		s.Blocks = append(s.Blocks, m)
