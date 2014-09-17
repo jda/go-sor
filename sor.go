@@ -9,6 +9,7 @@ type SOR struct {
 	Version       SORVersion
 	Blocks        []Block
 	GeneralParams General
+	SupplerParams Supplier
 }
 
 func Parse(r *bufio.Reader) (SOR, error) {
@@ -31,6 +32,11 @@ func Parse(r *bufio.Reader) (SOR, error) {
 	}
 
 	err = parseGeneral(r, &s)
+	if err != nil {
+		return s, err
+	}
+
+	err = parseSupplier(r, &s)
 	if err != nil {
 		return s, err
 	}
