@@ -2,6 +2,7 @@ package sor
 
 import (
 	"bufio"
+	"bytes"
 )
 
 // read at most n bytes from reader.
@@ -25,4 +26,10 @@ func getBlock(name string, s *SOR) (b Block, err error) {
 	}
 	var emptyBlock Block
 	return emptyBlock, ErrNoBlock
+}
+
+func cleanString(bs []byte) string {
+	bs = bytes.TrimRight(bs, "\u0000")
+	bs = bytes.TrimSpace(bs)
+	return string(bs)
 }

@@ -37,25 +37,25 @@ func parseSupplier(r *bufio.Reader, s *SOR) error {
 	}
 
 	sn, _ := bkBuf.ReadBytes('\x00')
-	bk.Supplier = string(bytes.TrimSpace(sn))
+	bk.Supplier = cleanString(sn)
 
 	mfid, _ := bkBuf.ReadBytes('\x00')
-	bk.MainframeID = string(bytes.TrimSpace(mfid))
+	bk.MainframeID = cleanString(mfid)
 
 	otdr, _ := bkBuf.ReadBytes('\x00')
-	bk.MainframeSerial = string(bytes.TrimSpace(otdr))
+	bk.MainframeSerial = cleanString(otdr)
 
 	omid, _ := bkBuf.ReadBytes('\x00')
-	bk.OpticalID = string(bytes.TrimSpace(omid))
+	bk.OpticalID = cleanString(omid)
 
 	omsn, _ := bkBuf.ReadBytes('\x00')
-	bk.OpticalSN = string(bytes.TrimSpace(omsn))
+	bk.OpticalSN = cleanString(omsn)
 
 	sr, _ := bkBuf.ReadBytes('\x00')
-	bk.SoftwareVer = string(bytes.TrimSpace(sr))
+	bk.SoftwareVer = cleanString(sr)
 
 	ot, _ := bkBuf.ReadBytes('\x00')
-	bk.Other = string(bytes.TrimSpace(ot))
+	bk.Other = cleanString(ot)
 
 	s.SupplerParams = bk
 
