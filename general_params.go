@@ -7,20 +7,20 @@ import (
 )
 
 type General struct {
-	ID             string
-	Language       string
-	CableID        string
-	FiberID        string
-	FiberType      int
-	Wavelength     int
-	OriginatingLoc string
-	TerminatingLoc string
-	CableCode      string
-	Condition      string
-	Offset         int32
-	OffsetDistance int32
-	Operator       string
-	Comment        string
+	ID                string
+	Language          string
+	CableID           string
+	FiberID           string
+	FiberType         int
+	NominalWavelength int16
+	OriginatingLoc    string
+	TerminatingLoc    string
+	CableCode         string
+	Condition         string
+	Offset            int32
+	OffsetDistance    int32
+	Operator          string
+	Comment           string
 }
 
 func parseGeneral(r *bufio.Reader, s *SOR) error {
@@ -44,14 +44,14 @@ func parseGeneral(r *bufio.Reader, s *SOR) error {
 	}
 
 	lc := make([]byte, 2)
-	_, err = bkBuf.Read(lc)
+	_, _ = bkBuf.Read(lc)
 	bk.Language = string(lc)
 
 	cid, _ := bkBuf.ReadBytes('\x00')
-	bk.CableID = string(bytes.TrimSpace(cid))
+	bk.CableID = cleanString(cid)
 
 	fid, _ := bkBuf.ReadBytes('\x00')
-	bk.FiberID = string(bytes.TrimSpace(fid))
+	bk.FiberID = cleanString(fid)
 
 	// fiber type not in v1?
 	if s.Version == SORv2 {
@@ -60,18 +60,16 @@ func parseGeneral(r *bufio.Reader, s *SOR) error {
 		bk.FiberType = int(ft)
 	}
 
-	var nw uint16
-	binary.Read(bkBuf, binary.LittleEndian, &nw)
-	bk.Wavelength = int(nw)
+	binary.Read(bkBuf, binary.LittleEndian, &bk.NominalWavelength)
 
 	ol, _ := bkBuf.ReadBytes('\x00')
-	bk.OriginatingLoc = string(bytes.TrimSpace(ol))
+	bk.OriginatingLoc = cleanString(ol)
 
 	tl, _ := bkBuf.ReadBytes('\x00')
-	bk.TerminatingLoc = string(bytes.TrimSpace(tl))
+	bk.TerminatingLoc = cleanString(tl)
 
 	cc, _ := bkBuf.ReadBytes('\x00')
-	bk.CableCode = string(bytes.TrimSpace(cc))
+	bk.CableCode = cleanString(cc)
 
 	cdf := make([]byte, 2)
 	_, err = bkBuf.Read(cdf)
@@ -85,10 +83,10 @@ func parseGeneral(r *bufio.Reader, s *SOR) error {
 	}
 
 	op, _ := bkBuf.ReadBytes('\x00')
-	bk.Operator = string(bytes.TrimSpace(op))
+	bk.Operator = cleanString(op)
 
 	cmt, _ := bkBuf.ReadBytes('\x00')
-	bk.Comment = string(bytes.TrimSpace(cmt))
+	bk.Comment = cleanString(cmt)
 
 	s.GeneralParams = bk
 
