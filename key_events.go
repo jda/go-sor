@@ -46,7 +46,7 @@ func parseKeyEvents(r *bufio.Reader, s *SOR) error {
 
 	binary.Read(bkBuf, binary.LittleEndian, &bk.TotalEvents)
 
-	for i := int16(0); i <= bk.TotalEvents; i++ {
+	for i := int16(0); i < bk.TotalEvents; i++ {
 		e := KeyEvent{}
 
 		binary.Read(bkBuf, binary.LittleEndian, &e.Number)
