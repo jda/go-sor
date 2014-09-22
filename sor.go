@@ -12,6 +12,7 @@ type SOR struct {
 	SupplerParams SupplierParamBlock
 	FixedParams   FixedParamBlock
 	KeyEvents     KeyEventsBlock
+	DataPoints    DataPointsBlock
 }
 
 func Parse(r *bufio.Reader) (SOR, error) {
@@ -49,6 +50,11 @@ func Parse(r *bufio.Reader) (SOR, error) {
 	}
 
 	err = parseKeyEvents(r, &s)
+	if err != nil {
+		return s, err
+	}
+
+	err = parseDataPoints(r, &s)
 	if err != nil {
 		return s, err
 	}
