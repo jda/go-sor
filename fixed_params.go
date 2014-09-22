@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type Fixed struct {
+type FixedParamBlock struct {
 	ID                       string
 	Timestamp                time.Time
 	Units                    string
@@ -38,7 +38,7 @@ type Fixed struct {
 }
 
 func parseFixed(r *bufio.Reader, s *SOR) error {
-	bk := Fixed{ID: "FxdParams"}
+	bk := FixedParamBlock{ID: "FxdParams"}
 
 	header, err := getBlock(bk.ID, s)
 	if err != nil {

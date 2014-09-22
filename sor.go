@@ -8,9 +8,10 @@ import (
 type SOR struct {
 	Version       SORVersion
 	Blocks        []Block
-	GeneralParams General
-	SupplerParams Supplier
-	FixedParams   Fixed
+	GeneralParams GeneralParamBlock
+	SupplerParams SupplierParamBlock
+	FixedParams   FixedParamBlock
+	KeyEvents     KeyEventsBlock
 }
 
 func Parse(r *bufio.Reader) (SOR, error) {
@@ -47,8 +48,13 @@ func Parse(r *bufio.Reader) (SOR, error) {
 		return s, err
 	}
 
-	prettyPrint(s)
-	//fmt.Printf("SOR: %+v\n", s)
+	err = parseKeyEvents(r, &s)
+	if err != nil {
+		return s, err
+	}
+
+	//prettyPrint(s)
+	fmt.Printf("SOR: %+v\n", s)
 
 	return s, nil
 }

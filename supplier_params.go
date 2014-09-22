@@ -5,7 +5,7 @@ import (
 	"bytes"
 )
 
-type Supplier struct {
+type SupplierParamBlock struct {
 	ID              string
 	Supplier        string
 	MainframeID     string
@@ -17,7 +17,7 @@ type Supplier struct {
 }
 
 func parseSupplier(r *bufio.Reader, s *SOR) error {
-	bk := Supplier{ID: "SupParams"}
+	bk := SupplierParamBlock{ID: "SupParams"}
 
 	header, err := getBlock(bk.ID, s)
 	if err != nil {

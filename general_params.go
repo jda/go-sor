@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 )
 
-type General struct {
+type GeneralParamBlock struct {
 	ID                string
 	Language          string
 	CableID           string
@@ -24,7 +24,7 @@ type General struct {
 }
 
 func parseGeneral(r *bufio.Reader, s *SOR) error {
-	bk := General{ID: "GenParams"}
+	bk := GeneralParamBlock{ID: "GenParams"}
 
 	header, err := getBlock(bk.ID, s)
 	if err != nil {
