@@ -57,11 +57,11 @@ func parseKeyEvents(r *bufio.Reader, s *SOR) error {
 
 		ec := make([]byte, 6)
 		_, _ = bkBuf.Read(ec)
-		e.Code = string(ec)
+		e.Code = cleanString(ec)
 
 		lmt := make([]byte, 2)
 		_, _ = bkBuf.Read(lmt)
-		e.LossMeasurementTechnique = string(lmt)
+		e.LossMeasurementTechnique = cleanString(lmt)
 
 		for j := 0; j < 5; j++ {
 			var ml int32
