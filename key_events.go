@@ -10,6 +10,7 @@ type KeyEventsBlock struct {
 	ID          string
 	TotalEvents int16
 	Events      []KeyEvent
+	TotalLoss	int16
 }
 
 type KeyEvent struct {
@@ -76,6 +77,6 @@ func parseKeyEvents(r *bufio.Reader, s *SOR) error {
 	}
 
 	s.KeyEvents = bk
-
+	binary.Read(bkBuf, binary.LittleEndian, &bk.TotalLoss)
 	return nil
 }
